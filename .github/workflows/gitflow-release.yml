@@ -7,11 +7,11 @@ on:
       - master
 
 jobs:
-  tag:
+  tag-and-backmerge:
     if: |
       github.event.pull_request.merged == true &&
-      github.event.pull_request.head.ref == 'develop'
-    name: Tag Release
+      startsWith(github.event.pull_request.head.ref, 'release/')
+    name: Tag and Back-merge
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -22,10 +22,11 @@ jobs:
           ref: master
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Read version
+      - name: Extract version from branch name
         id: version
         run: |
-          version=$(cat VERSION)
+          branch="${{ github.event.pull_request.head.ref }}"
+          version="${branch#release/}"
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Create and push tag
@@ -38,3 +39,10 @@ jobs:
             git tag "v${{ steps.version.outputs.version }}"
             git push origin "v${{ steps.version.outputs.version }}"
           fi
+
+      - name: Back-merge master into develop
+        run: |
+          git fetch origin develop
+          git checkout develop
+          git merge master --no-edit -m "chore: back-merge master into develop after release v${{ steps.version.outputs.version }}"
+          git push origin develop

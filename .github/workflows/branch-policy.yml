@@ -17,15 +17,15 @@ jobs:
           SOURCE="${{ github.head_ref }}"
 
           if [ "$TARGET" = "master" ]; then
-            if [ "$SOURCE" != "develop" ]; then
-              echo "PRs to master must come from develop (got: $SOURCE)"
+            if [[ "$SOURCE" != release/* ]]; then
+              echo "PRs to master must come from a release/* branch (got: $SOURCE)"
               exit 1
             fi
           fi
 
           if [ "$TARGET" = "develop" ]; then
-            if [[ "$SOURCE" != feature/* && "$SOURCE" != bugfix/* && "$SOURCE" != chore/* && "$SOURCE" != hotfix/* && "$SOURCE" != dependabot/* ]]; then
-              echo "PRs to develop must come from feature/*, bugfix/*, chore/*, hotfix/*, or dependabot/* branches (got: $SOURCE)"
+            if [[ "$SOURCE" != feature/* && "$SOURCE" != bugfix/* && "$SOURCE" != chore/* && "$SOURCE" != hotfix/* && "$SOURCE" != release/* && "$SOURCE" != dependabot/* ]]; then
+              echo "PRs to develop must come from feature/*, bugfix/*, chore/*, hotfix/*, release/*, or dependabot/* branches (got: $SOURCE)"
               exit 1
             fi
           fi

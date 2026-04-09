@@ -48,15 +48,19 @@ sections/
   education.tex
   skills.tex
   projects.tex
+VERSION                 # Current version string (read by CI to create the release tag)
 .mise/tasks/
   build                 # Compile PDF
   watch                 # Watch + recompile on change
   clean                 # Remove output directory
-  release               # Tag + push to trigger CI
 .env.example            # Build defaults
 .env                    # Personal overrides (gitignored)
 .devcontainer/          # VS Code dev container config
-.github/workflows/release.yml
+.github/workflows/
+  ci.yml                # Build PDF on push/PR to master or develop
+  branch-policy.yml     # Enforce branch naming conventions
+  gitflow-release.yml   # Auto-tag when develop is merged to master
+  release.yml           # Build PDF and publish GitHub Release on tag push
 ```
 
 ---
@@ -136,17 +140,47 @@ No local TeX Live installation is required.
 
 ---
 
+## Branching Model
+
+This project follows a simple GitFlow convention:
+
+| Branch | Purpose |
+|---|---|
+| `master` | Always-releasable. Only receives merges from `release/*` branches. |
+| `develop` | Integration branch. Merges from feature/bugfix/chore/hotfix/release branches. |
+| `feature/*` | New features — merge into `develop` via PR. |
+| `bugfix/*` | Bug fixes — merge into `develop` via PR. |
+| `chore/*` | Maintenance tasks — merge into `develop` via PR. |
+| `hotfix/*` | Urgent fixes — merge into `develop` via PR. |
+| `release/<version>` | Release preparation — created from `develop`, merged into `master` to trigger a release. |
+
+Branch naming is enforced by `.github/workflows/branch-policy.yml`. PRs to `master` must come from `release/*`; PRs to `develop` must come from one of the prefixes above (or `dependabot/*`).
+
+---
+
 ## CI/CD
 
-Pushing a version tag triggers `.github/workflows/release.yml`, which builds the PDF and attaches it as an artifact to a GitHub Release.
+Four workflows handle automation:
+
+| Workflow | Trigger | What it does |
+|---|---|---|
+| `ci.yml` | Push or PR to `master`/`develop` | Compiles the PDF and uploads it as a build artifact. |
+| `branch-policy.yml` | PR to `master` or `develop` | Validates branch naming conventions. |
+| `gitflow-release.yml` | `release/*` → `master` PR merged | Extracts the version from the branch name, creates the git tag, and back-merges `master` into `develop`. |
+| `release.yml` | Tag push (`v*`) or manual dispatch | Builds the PDF and publishes a GitHub Release with the PDF attached. |
 
 **To cut a release:**
 
 ```bash
-# Using the mise task (prompts for confirmation, then tags and pushes)
-mise run release 2026.04
+# 1. Create a release branch from develop
+git checkout develop && git pull origin develop
+git checkout -b release/2026.05
+git push origin release/2026.05
 
-# Equivalent manual steps
-git tag v2026.04
-git push origin v2026.04
+# 2. Open a pull request from release/2026.05 → master on GitHub
+# 3. Merge the PR — gitflow-release.yml extracts the version from the branch name,
+#    creates tag v2026.05, and back-merges master into develop automatically
+# 4. release.yml triggers on the new tag and publishes the GitHub Release
 ```
+
+The `release.yml` workflow also supports manual dispatch with an optional dry-run mode (builds without publishing) for testing.
