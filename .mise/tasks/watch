@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+#MISE description="Watch for changes and recompile automatically"
+
+#USAGE arg "<input>" help="Source .tex file to watch" default="resume.tex"
+#USAGE flag "-n --name <name>" help="Output PDF base name (default: stem of <input>)"
+#USAGE flag "-o --outdir <dir>" help="Output directory" default="out"
+
+set -euo pipefail
+
+input="${usage_input}"
+outdir="${usage_outdir}"
+name="${usage_name:-$(basename "${input%.tex}")}"
+
+echo "Watching $input for changes (Ctrl-C to stop)..."
+
+mkdir -p "$outdir"
+latexmk -pdf -pvc -interaction=nonstopmode \
+  -output-directory="$outdir" \
+  -jobname="$name" \
+  "$input"

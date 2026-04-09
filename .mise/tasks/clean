@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+#MISE description="Remove all LaTeX build artifacts"
+
+#USAGE flag "-o --outdir <dir>" help="Output directory to clean" default="out"
+
+set -euo pipefail
+
+outdir="${usage_outdir}"
+
+latexmk -C -output-directory="$outdir" 2>/dev/null || true
+rm -rf "$outdir"
+
+echo "Cleaned $outdir/"

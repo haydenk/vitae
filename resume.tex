@@ -1,0 +1,90 @@
+%% resume.tex — main entry point
+%% Compile with: make
+\documentclass[10pt, letterpaper]{article}
+
+% ---------- packages ----------
+\usepackage[
+  top=0.5in, bottom=0.5in,
+  left=0.6in, right=0.6in
+]{geometry}
+\usepackage{hyperref}
+\usepackage{fontawesome5}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{multicol}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+% ---------- color scheme ----------
+\definecolor{accent}{HTML}{2E4057}
+\definecolor{rule}{HTML}{AABBC8}
+
+% ---------- hyperlink style ----------
+\hypersetup{
+  colorlinks=true,
+  urlcolor=accent,
+  linkcolor=accent
+}
+
+% ---------- section formatting ----------
+\titleformat{\section}
+  {\large\bfseries\color{accent}}
+  {}
+  {0em}
+  {}
+  [\vspace{-0.4em}\textcolor{rule}{\titlerule[0.5pt]}\vspace{0.2em}]
+
+\titlespacing{\section}{0pt}{0.8em}{0.3em}
+
+% ---------- list style ----------
+\setlist[itemize]{
+  leftmargin=1.2em,
+  itemsep=0.1em,
+  topsep=0.2em,
+  parsep=0pt
+}
+
+% ---------- commands ----------
+\newcommand{\resumeheader}[5]{%
+  \begin{center}
+    {\LARGE\bfseries\color{accent} #1}\\[0.3em]
+    \small
+    \faEnvelope\ \href{mailto:#2}{#2}
+    \quad\textbar\quad
+    \faPhone\ #3
+    \quad\textbar\quad
+    \faLinkedin\ \href{https://linkedin.com/in/#4}{linkedin.com/in/#4}
+    \quad\textbar\quad
+    \faGithub\ \href{https://github.com/#5}{github.com/#5}
+  \end{center}
+}
+
+\newcommand{\entry}[4]{%
+  % #1 = title/role  #2 = org  #3 = location  #4 = date range
+  \noindent
+  \textbf{#1} \hfill \textit{\small #4}\\
+  \textit{\small #2} \hfill \textit{\small #3}
+  \vspace{0.1em}
+}
+
+\newcommand{\entryskills}[2]{%
+  % #1 = label  #2 = value
+  \noindent\textbf{#1:} #2\\[0.15em]
+}
+
+% ======================================================
+\begin{document}
+\pagestyle{empty}
+
+% ---------- sections ----------
+\input{sections/header}
+\input{sections/summary}
+\input{sections/experience}
+\input{sections/education}
+\input{sections/skills}
+\input{sections/projects}
+
+\end{document}

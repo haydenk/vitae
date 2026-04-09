@@ -1,0 +1,74 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to release (e.g. v2026.04)"
+        required: true
+        type: string
+      dry_run:
+        description: "Dry run — build without publishing"
+        required: false
+        type: boolean
+        default: false
+
+env:
+  RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+  INPUT: resume.tex
+  NAME: resume
+  OUTDIR: out
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Compile LaTeX and publish release
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          ref: ${{ env.RELEASE_TAG }}
+
+      - name: Cache apt packages
+        uses: actions/cache@5a3ec84eff668545956fd18022a14a1b5ded4b56 # v4.2.3
+        with:
+          path: /var/cache/apt/archives
+          key: apt-texlive-${{ runner.os }}-${{ hashFiles('.github/workflows/release.yml') }}
+          restore-keys: apt-texlive-${{ runner.os }}-
+
+      - name: Install TeX Live
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            texlive-latex-recommended \
+            texlive-latex-extra \
+            texlive-fonts-recommended \
+            texlive-fonts-extra \
+            latexmk
+
+      - uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
+
+      - name: Build
+        run: mise run build
+
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: resume-pdf
+          path: ${{ env.OUTDIR }}/${{ env.NAME }}.pdf
+          if-no-files-found: error
+
+      - uses: softprops/action-gh-release@153bb8e04406b158c6c84fc1615b65b24149a1fe # v2.6.1
+        if: ${{ !inputs.dry_run }}
+        with:
+          tag_name: ${{ env.RELEASE_TAG }}
+          name: "Resume ${{ env.RELEASE_TAG }}"
+          body: "Automated PDF release for tag `${{ env.RELEASE_TAG }}`."
+          files: ${{ env.OUTDIR }}/${{ env.NAME }}.pdf
+          fail_on_unmatched_files: true

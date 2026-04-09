@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+#MISE description="Compile a .tex file to PDF"
+#MISE sources=["*.tex", "sections/*.tex"]
+#MISE outputs={auto=true}
+
+#USAGE arg "<input>" help="Source .tex file to compile" default="resume.tex" env="INPUT"
+#USAGE flag "-n --name <name>" help="Output PDF base name (default: stem of <input>)" env="NAME"
+#USAGE flag "-o --outdir <dir>" help="Output directory" default="out" env="OUTDIR"
+#USAGE flag "--open" help="Open the PDF after a successful build"
+#USAGE flag "--clean-aux" help="Remove auxiliary files after build"
+
+set -euo pipefail
+
+input="${usage_input}"
+outdir="${usage_outdir}"
+name="${usage_name:-$(basename "${input%.tex}")}"
+
+mkdir -p "$outdir"
+
+latexmk -pdf -interaction=nonstopmode \
+  -output-directory="$outdir" \
+  -jobname="$name" \
+  "$input"
+
+echo "Output: $outdir/$name.pdf"
+
+if [[ "${usage_open:-false}" == "true" ]]; then
+  open "$outdir/$name.pdf"
+fi
+
+if [[ "${usage_clean_aux:-false}" == "true" ]]; then
+  latexmk -output-directory="$outdir" -jobname="$name" -c "$input"
+fi
