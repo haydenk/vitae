@@ -16,7 +16,7 @@
   "remoteEnv": {
     "PATH": "${containerEnv:HOME}/.local/share/mise/shims:${containerEnv:PATH}"
   },
-  "onCreateCommand": "sudo apt update && sudo apt install -y --no-install-recommends texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra latexmk lmodern 2>&1 | tail -5",
+  "onCreateCommand": "bash .devcontainer/onCreateSetup.sh",
 
   "postCreateCommand": "bash .devcontainer/setup.sh",
 
