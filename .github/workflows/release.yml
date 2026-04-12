@@ -4,6 +4,17 @@ on:
   push:
     tags:
       - "v*"
+  workflow_call:
+    inputs:
+      tag:
+        description: "Tag to release (e.g. v2026.04)"
+        required: true
+        type: string
+      dry_run:
+        description: "Dry run — build without publishing"
+        required: false
+        type: boolean
+        default: false
   workflow_dispatch:
     inputs:
       tag:
@@ -19,7 +30,7 @@ on:
 env:
   RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
   INPUT: resume.tex
-  NAME: resume
+  NAME: hayden_king
   OUTDIR: out
 
 permissions:
@@ -51,8 +62,8 @@ jobs:
             texlive-latex-extra \
             texlive-fonts-recommended \
             texlive-fonts-extra \
-            latexmk \
-            lmodern
+            texlive-font-utils \
+            latexmk
 
       - uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
 

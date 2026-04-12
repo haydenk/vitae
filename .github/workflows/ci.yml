@@ -12,7 +12,7 @@ on:
 
 env:
   INPUT: resume.tex
-  NAME: resume
+  NAME: hayden_king
   OUTDIR: out
 
 jobs:
@@ -38,8 +38,8 @@ jobs:
             texlive-latex-extra \
             texlive-fonts-recommended \
             texlive-fonts-extra \
-            latexmk \
-            lmodern
+            texlive-font-utils \
+            latexmk
 
       - uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
 

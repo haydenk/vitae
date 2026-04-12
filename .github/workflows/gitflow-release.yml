@@ -15,6 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -46,3 +48,13 @@ jobs:
           git checkout develop
           git merge master --no-edit -m "chore: back-merge master into develop after release v${{ steps.version.outputs.version }}"
           git push origin develop
+
+  publish:
+    name: Publish Release
+    needs: tag-and-backmerge
+    uses: ./.github/workflows/release.yml
+    with:
+      tag: v${{ needs.tag-and-backmerge.outputs.version }}
+      dry_run: false
+    permissions:
+      contents: write
