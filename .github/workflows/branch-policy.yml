@@ -17,8 +17,8 @@ jobs:
           SOURCE="${{ github.head_ref }}"
 
           if [ "$TARGET" = "master" ]; then
-            if [[ "$SOURCE" != release/* ]]; then
-              echo "PRs to master must come from a release/* branch (got: $SOURCE)"
+            if [[ "$SOURCE" != release/* && "$SOURCE" != hotfix/* ]]; then
+              echo "PRs to master must come from a release/* or hotfix/* branch (got: $SOURCE)"
               exit 1
             fi
           fi
