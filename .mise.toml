@@ -1,2 +1,6 @@
 [env]
 _.file = ".env"
+
+[tools]
+uv = "latest"
+watchexec = "latest"

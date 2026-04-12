@@ -14,7 +14,7 @@ name="${usage_name:-$(basename "${input%.tex}")}"
 echo "Watching $input for changes (Ctrl-C to stop)..."
 
 mkdir -p "$outdir"
-latexmk -pdf -pvc -interaction=nonstopmode \
+latexmk -pdf -pvc -view=none -interaction=nonstopmode \
   -output-directory="$outdir" \
   -jobname="$name" \
   "$input"

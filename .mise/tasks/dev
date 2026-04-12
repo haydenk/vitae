@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+#MISE description="Watch and serve PDF via HTTP"
+
+set -euo pipefail
+
+mkdir -p out
+exec overseer start
