@@ -68,6 +68,7 @@ jobs:
       - name: Install inter font package
         run: |
           tlmgr init-usertree
+          tlmgr option repository https://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2023/tlnet-final
           tlmgr --usermode install inter
 
       - uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
