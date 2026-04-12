@@ -7,9 +7,15 @@ and this project uses `YYYY.MM` versioning aligned with release branch names.
 
 ## [Unreleased]
 
+---
+
+## [2026.04.1] - 2026-04-12
+
+> This patch release exists because the branch policy fix was accidentally merged into `develop` instead of going directly to `master` via a `release/*` branch, necessitating a new release cut.
+
 ### Fixed
 
-- Gitflow release workflow adjustments (in progress)
+- Branch policy now allows `hotfix/*` branches to target `master`, in addition to `release/*`
 
 ---
 
@@ -39,5 +45,6 @@ and this project uses `YYYY.MM` versioning aligned with release branch names.
 
 ---
 
-[Unreleased]: https://github.com/haydenk/vitae/compare/v2026.04...HEAD
+[Unreleased]: https://github.com/haydenk/vitae/compare/v2026.04.1...HEAD
+[2026.04.1]: https://github.com/haydenk/vitae/compare/v2026.04...v2026.04.1
 [2026.04]: https://github.com/haydenk/vitae/releases/tag/v2026.04
