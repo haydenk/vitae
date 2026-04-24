@@ -1,4 +1,6 @@
-# vitae
+<div align="center">
+  <img src="assets/banner.png" alt="vitae" width="600" />
+</div>
 
 A LaTeX resume template with modular sections, task-based build tooling, and GitHub Actions CI/CD for automatic PDF release artifacts.
 

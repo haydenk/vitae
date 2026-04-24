@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+#MISE description="Install LaTeX toolchain and fonts required to build the resume"
+
+set -euo pipefail
+
+install_macos() {
+  if ! command -v brew >/dev/null 2>&1; then
+    echo "Homebrew is required on macOS. Install from https://brew.sh and rerun."
+    exit 1
+  fi
+  echo "Installing MacTeX (no GUI) via Homebrew..."
+  brew install --cask mactex-no-gui
+  echo
+  echo "MacTeX installs into /Library/TeX/texbin — open a new shell (or"
+  echo "'eval \"\$(/usr/libexec/path_helper)\"') to pick up PATH, then rerun"
+  echo "'mise run setup' to install the inter font package."
+}
+
+install_debian() {
+  echo "Installing TeX Live via apt-get..."
+  sudo apt-get update -qq
+  sudo apt-get install -y --no-install-recommends \
+    texlive-latex-recommended \
+    texlive-latex-extra \
+    texlive-fonts-recommended \
+    texlive-fonts-extra \
+    texlive-font-utils \
+    texlive-lang-greek \
+    latexmk
+}
+
+install_inter_font() {
+  if ! command -v tlmgr >/dev/null 2>&1; then
+    echo "Skipping inter font install: tlmgr not on PATH yet."
+    return 0
+  fi
+  if kpsewhich inter.sty >/dev/null 2>&1; then
+    echo "inter font package already installed."
+    return 0
+  fi
+  echo "Installing inter font via tlmgr..."
+  tlmgr init-usertree >/dev/null 2>&1 || true
+  tlmgr --usermode install inter
+}
+
+if ! command -v latexmk >/dev/null 2>&1; then
+  case "$(uname -s)" in
+    Darwin) install_macos ;;
+    Linux)
+      if command -v apt-get >/dev/null 2>&1; then
+        install_debian
+      else
+        echo "Unsupported Linux distro: this task only automates apt-based systems."
+        echo "Install TeX Live + latexmk manually, then rerun."
+        exit 1
+      fi
+      ;;
+    *)
+      echo "Unsupported OS: $(uname -s). Install TeX Live + latexmk manually."
+      exit 1
+      ;;
+  esac
+else
+  echo "latexmk already installed: $(latexmk --version | head -1)"
+fi
+
+install_inter_font
+
+echo
+echo "Setup complete. Try: mise run build"
