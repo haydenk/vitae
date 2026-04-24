@@ -7,6 +7,23 @@ and this project uses `YYYY.MM` versioning aligned with release branch names.
 
 ## [Unreleased]
 
+### Added
+
+- AI skills row in resume covering Claude (Sonnet, Opus), Claude Code, Anthropic API, OpenAI API, Codex, and agentic workflows
+- Experience bullet describing AI-assisted development work at current role
+- `mise run setup` task that installs the LaTeX toolchain and inter font on macOS (MacTeX) and Debian/Ubuntu
+- `overseer` (from `github:haydenk/overseer`) to the mise tool list
+- Banner image in the README
+
+### Changed
+
+- Current role title updated to "Senior Software Engineer / Architect"
+- `Procfile` `serve` process now honors `$PORT` instead of hardcoding `8000`
+
+### Fixed
+
+- `resume.tex` uses the lowercase `inter` package name, matching the CTAN package
+
 ---
 
 ## [2026.04.1] - 2026-04-12
