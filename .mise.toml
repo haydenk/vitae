@@ -4,3 +4,4 @@ _.file = ".env"
 [tools]
 uv = "latest"
 watchexec = "latest"
+"github:haydenk/overseer" = "latest"
